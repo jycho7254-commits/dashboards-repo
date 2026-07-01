@@ -71,7 +71,7 @@ const EXCEL=[{i:'2324008',t:'本地化-漏key+全量表内key不存在',s:'一�
 
 async function ld(){
 try{
-const resp=await fetch('./tapd_data.json?_='+Date.now());if(!resp.ok)throw new Error('HTTP '+resp.status);const raw=await resp.json();const rb=(raw.data||raw).filter(Boolean);
+const rb=await fetch('/data/all_bugs_r.json').then(r=>r.json());
 HB=rb.filter(b=>HF.some(f=>(b[f]||'').includes('HUN')));
 const vf=new Set();const vr=new Set();
 HB.forEach(b=>{if(b.version_fix&&b.version_fix!=='0')vf.add(b.version_fix);if(b.version_report&&b.version_report!=='0')vr.add(b.version_report)});
@@ -86,7 +86,7 @@ document.getElementById('xc').innerHTML='';const xKl={fatal:'치명',serious:'�
 document.getElementById('xc').innerHTML='<span class="chip on" data-v="all" data-t="sv">전체</span>'+document.getElementById('xc').innerHTML;
 document.querySelectorAll('.chip').forEach(c=>{c.onclick=function(){const v=this.getAttribute('data-v');const t=this.getAttribute('data-t');const s=FS[t];if(v==='all'){if(!s.has('all')){s.clear();s.add('all')}else{s.delete('all');this.classList.remove('on')}if(s.size===0){s.add('all')}document.querySelectorAll('.chip[data-v="all"][data-t="'+t+'"]').forEach(x=>x.classList.toggle('on',s.has('all')))}else{s.delete('all');document.querySelectorAll('.chip[data-v="all"][data-t="'+t+'"]').forEach(x=>x.classList.remove('on'));if(s.has(v)){s.delete(v);this.classList.remove('on')}else{s.add(v);this.classList.add('on')}if(s.size===0){s.add('all');document.querySelectorAll('.chip[data-v="all"][data-t="'+t+'"]').forEach(x=>x.classList.add('on'))}}rnd()}});
 document.getElementById('th').textContent=HB.length;
-document.getElementById('lu').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(raw.meta&&raw.meta.fetched_at?' (수집: '+raw.meta.fetched_at.replace('T',' ').substring(0,16)+')':'');
+document.getElementById('lu').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
 document.getElementById('lb').style.display='none';
 rnd();detCh();
 }catch(e){document.getElementById('lb').innerHTML='Error: '+e.message}
@@ -115,8 +115,8 @@ drawCharts(F);
 function tbl(items){
 const bgMap=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');
 const limit=80;const show=items.slice(0,limit);
-const more=items.length>limit?'<tr><td colspan="9" style="text-align:center;color:#999;padding:8px">... '+(items.length-limit)+'건 더 있음</td></tr>':'';
-return'<table><tr><th>ID</th><th>제목</th><th>상태</th><th>심각도</th><th>发现版本</th><th>合入版本</th><th>생성일</th><th>생성자</th><th>비고</th></tr>'+show.map(b=>{const id=b.id||'';const lk='https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id;const st=(b.status||'').toLowerCase();const sr=(b.severity||'').toLowerCase();const cls=st==='new'?'style="background:#fff5f5"':'';const bgVal=(bgMap[id]||'').replace(/"/g,'&quot;');return'<tr '+cls+'><td>'+id.slice(-7)+'</td><td><a href="'+lk+'" target="_blank">'+esc((b.title||'').substring(0,45))+'</a></td><td><span class="tg '+(st==='new'?'tn':st==='in_progress'||st==='reopened'?'tp':'tc')+'">'+(b.status||'-')+'</span></td><td><span class="tg '+(sr.includes('fatal')||sr.includes('critical')?'sf':sr.includes('serious')||sr.includes('major')?'ss':'sn')+'">'+(b.severity||'-')+'</span></td><td>'+(b.version_report||'-')+'</td><td>'+(b.version_fix||'-')+'</td><td>'+(b.created||'').substring(0,10)+'</td><td>'+(b.reporter||'-')+'</td><td><input class="bg-input" data-id="'+id+'" placeholder="-" onchange="saveBg(this.dataset.id,this.value)" value="'+bgVal+'"></td></tr>'}).join('')+more+'</table>'
+const more=items.length>limit?'<tr><td colspan="8" style="text-align:center;color:#999;padding:8px">... '+(items.length-limit)+'건 더 있음</td></tr>':'';
+return'<table><tr><th>ID</th><th>제목</th><th>상태</th><th>심각도</th><th>发现版本</th><th>合入版本</th><th>생성일</th><th>비고</th></tr>'+show.map(b=>{const id=b.id||'';const lk='https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id;const st=(b.status||'').toLowerCase();const sr=(b.severity||'').toLowerCase();const cls=st==='new'?'style="background:#fff5f5"':'';const bgVal=(bgMap[id]||'').replace(/"/g,'&quot;');return'<tr '+cls+'><td>'+id.slice(-7)+'</td><td><a href="'+lk+'" target="_blank">'+esc((b.title||'').substring(0,45))+'</a></td><td><span class="tg '+(st==='new'?'tn':st==='in_progress'||st==='reopened'?'tp':'tc')+'">'+(b.status||'-')+'</span></td><td><span class="tg '+(sr.includes('fatal')||sr.includes('critical')?'sf':sr.includes('serious')||sr.includes('major')?'ss':'sn')+'">'+(b.severity||'-')+'</span></td><td>'+(b.version_report||'-')+'</td><td>'+(b.version_fix||'-')+'</td><td>'+(b.created||'').substring(0,10)+'</td><td><input class="bg-input" data-id="'+id+'" placeholder="-" onchange="saveBg(this.dataset.id,this.value)" value="'+bgVal+'"></td></tr>'}).join('')+more+'</table>'
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function saveBg(id,v){try{const m=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');if(v)m[id]=v;else delete m[id];localStorage.setItem('tapd_bigo',JSON.stringify(m))}catch(e){}}
@@ -158,7 +158,7 @@ let html='';Object.entries(gr).forEach(([t,its])=>{html+='<div style="margin-bot
 el.innerHTML=html;document.getElementById('ntT').textContent='마지막 확인: '+new Date().toLocaleTimeString('ko-KR')+' (3시간)';
 }
 function tN(){NO=!NO;document.getElementById('p').classList.toggle('open',NO);document.getElementById('d').style.display='none'}
-async function manualRefresh(){const rs=document.getElementById('rs');rs.textContent='상태: 데이터 갱신 중...';try{FT=true;await ld();rs.textContent='✅ 완료 ('+new Date().toLocaleTimeString('ko-KR')+')';setTimeout(()=>{rs.textContent='마지막: '+new Date().toLocaleTimeString('ko-KR')},4000)}catch(e){rs.textContent='❌ 오류: '+e.message;document.getElementById('lb').innerHTML='Error: '+e.message}}
+async function manualRefresh(){const rs=document.getElementById('rs');rs.textContent='상태: TAPD 갱신 중...';try{const r=await fetch('/api/refresh');if(r.ok){rs.textContent='✅ 완료 ('+new Date().toLocaleTimeString('ko-KR')+')';setTimeout(()=>{rs.textContent='마지막: '+new Date().toLocaleTimeString('ko-KR')},4000);FT=true;ld()}else{rs.textContent='❌ 실패'}}catch(e){rs.textContent='❌ 오류: '+e.message}}
 let sec=10800;setInterval(()=>{sec--;if(sec<=0){sec=10800;ld()}},1000);
 ld();
 </script></body></html>
