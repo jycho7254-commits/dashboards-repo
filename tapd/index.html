@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Trickcal-HUN TAPD 대시보드</title>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>트릭컬 HUN 품질 대시보드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
@@ -16,6 +14,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f5f7fa;color:#333;line-he
 .header .meta span{background:rgba(255,255,255,.18);padding:5px 14px;border-radius:16px}
 .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px}
 .metric-card{background:#fff;border-radius:10px;padding:16px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.metric-card .icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:20px}
 .metric-card .value{font-size:28px;font-weight:700;color:#1a1a2e}
 .metric-card .label{font-size:12px;color:#666;margin-top:3px}
 .card{background:#fff;border-radius:10px;padding:20px;margin-bottom:14px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
@@ -28,7 +27,8 @@ th{background:#f8f9fa;font-weight:600;color:#555;font-size:11px}
 tr:hover{background:#f8f9fa}
 td a{color:#667eea;text-decoration:none}td a:hover{text-decoration:underline}
 .tg{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
-.tn{background:#fff3cd;color:#856404}.tp{background:#cce5ff;color:#004085}.tc{background:#e2e3e5;color:#383d41}
+.tn{background:#fff3cd;color:#856404}.tp{background:#cce5ff;color:#004085}
+.tc{background:#e2e3e5;color:#383d41}
 .sf{background:#dc3545;color:#fff}.ss{background:#fd7e14;color:#fff}.sn{background:#6c757d;color:#fff}
 .flt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:8px 10px;background:#fff;border-radius:8px;font-size:11px}
 .flt label{font-weight:500;color:#555;white-space:nowrap}
@@ -36,328 +36,129 @@ td a{color:#667eea;text-decoration:none}td a:hover{text-decoration:underline}
 .flt .chip{padding:2px 7px;border-radius:9px;font-size:10px;border:1px solid #dee2e6;cursor:pointer;background:#fff;user-select:none}
 .flt .chip.on{background:#667eea;color:#fff;border-color:#667eea}
 .flt .cnt{font-size:11px;color:#999;margin-left:auto}
+.nt-btn{position:fixed;top:14px;right:14px;z-index:999;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;font-size:17px;cursor:pointer;box-shadow:0 4px 12px rgba(102,126,234,.4)}
+.nt-dot{position:absolute;top:1px;right:1px;width:11px;height:11px;background:#e74c3c;border-radius:50%;border:2px solid #fff;display:none}
+.nt-panel{position:fixed;top:0;right:-380px;width:370px;height:100vh;background:#fff;z-index:998;box-shadow:-4px 0 20px rgba(0,0,0,.1);transition:right .3s;overflow-y:auto;padding:20px}
+.nt-panel.open{right:0}
+.nt-panel h3{font-size:15px;font-weight:700;margin-bottom:4px;padding-bottom:8px;border-bottom:2px solid #f0f0f0}
+.nt-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:18px;cursor:pointer;color:#999}
+.nt-item{padding:7px 9px;margin-bottom:5px;border-radius:7px;background:#f8f9fa;font-size:11px;border-left:3px solid #667eea}
+.nt-item.n-new{background:#e8f5e9;border-color:#27ae60}
+.nt-item.n-chg{background:#fff3cd;border-color:#f39c12}
+.nt-empty{text-align:center;padding:16px;color:#999;font-size:11px}
+@media(max-width:768px){.nt-panel{width:100vw;right:-100vw}}
 .footer{text-align:center;color:#999;font-size:10px;padding:12px}
+.bg-input{border:none;border-bottom:1px solid #ddd;background:transparent;width:80px;font-size:11px;padding:1px 3px;outline:none}.bg-input:focus{border-color:#667eea}
 .lb{text-align:center;padding:30px;color:#999}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="header">
-<h1>Trickcal-HUN TAPD 대시보드</h1>
-<div class="sub">TAPD API 실시간 · 처리자+참여자+개발자+수정자 · Netlify 24/7</div>
-<div class="meta">
-<span>📅 <span id="lu">로딩중</span></span>
-<span>🔍 HUN <span id="th">0</span>건</span>
-<span>📊 전체 <span id="tb">0</span>건</span>
+<div class="header"><h1>🎲 Trickcal-HUN TAPD 대시보드</h1><div class="sub">TAPD API 실시간 · 처리자+참여자+개발자+수정자 · 내부망 전용</div><div class="meta"><span>📅 <span id="lu">로딩중</span></span><span>🔄 <span id="ar">3</span>시간</span><span>🔍 HUN <span id="th">0</span>건</span></div></div>
+<button class="nt-btn" onclick="tN()">🔔<span class="nt-dot" id="d"></span></button>
+<div class="nt-panel" id="p"><button class="nt-close" onclick="tN()">✕</button><h3>🔔 변경 알림</h3><div id="ntT" style="font-size:10px;color:#999;margin:2px 0 10px">대기</div><div id="ntL"><div class="nt-empty">📡 첫 로딩 후 변경 감지</div></div></div>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;padding:6px 10px;background:#fff;border-radius:8px;font-size:11px"><span style="color:#666">&#x1F4E1; TAPD</span><button onclick="manualRefresh()" style="padding:4px 12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:11px">&#x1F504; &#xC218;&#xB3D9; &#xC5C5;&#xB370;&#xC774;&#xD2B8;</button><span id="rs" style="color:#999;margin-left:auto;font-size:10px">&#xB9C8;&#xC9C0;&#xB9C9;: -</span></div><div class="flt"><label>合入版本:</label><div class="chips" id="vc"></div><label style="margin-left:6px">发现版本:</label><div class="chips" id="dc"></div><label style="margin-left:6px">상태:</label><div class="chips" id="sc"></div><label style="margin-left:6px">심각:</label><div class="chips" id="xc"></div><span class="cnt" id="cb">0건</span></div>
+<div id="lb" class="lb">📡 데이터 로딩 중...</div><div id="ct"></div>
+<div class="card"><div class="card-title">📈 일일 버그 추세 (HUN 기준, 최근 30일)</div><div style="padding:8px;background:#f8f9fa;border-radius:8px;"><canvas id="dailyTrend" height="180"></canvas></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;"><div class="card" style="margin:0"><div class="card-title">📊 상태 분포</div><div style="padding:4px;"><canvas id="statusDist" height="180"></canvas></div></div><div class="card" style="margin:0"><div class="card-title">📊 심각도 분포</div><div style="padding:4px;"><canvas id="severeDist" height="180"></canvas></div></div></div>
+<div class="footer">TAPD API 실시간 · Trickcal_Revive · deepseek-v4-pro · http://192.168.4.139:8080</div>
 </div>
-</div>
-
-<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;padding:6px 10px;background:#fff;border-radius:8px;font-size:11px">
-<span style="color:#666">📡 TAPD</span>
-<button onclick="location.reload()" style="padding:4px 12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:11px">🔄 수동 업데이트</button>
-<span id="rs" style="color:#999;margin-left:auto;font-size:10px">마지막: -</span>
-</div>
-
-<div class="flt">
-<label>수정 버전:</label>
-<div class="chips" id="vc"></div>
-<label style="margin-left:6px">발견버전:</label>
-<div class="chips" id="dc"></div>
-</div>
-<div class="flt">
-<label>상태:</label>
-<div class="chips" id="sc"></div>
-<label style="margin-left:6px">심각:</label>
-<div class="chips" id="xc"></div>
-<span class="cnt" id="cb">0건</span>
-</div>
-
-<div id="lb" class="lb">📡 데이터 로딩 중...</div>
-<div id="ct"></div>
-
-<div class="card">
-<div class="card-title">📈 일일 버그 추세 (HUN 기준, 최근 30일)</div>
-<div style="padding:8px;background:#f8f9fa;border-radius:8px;"><canvas id="dailyTrend" height="180"></canvas></div>
-</div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-<div class="card" style="margin:0"><div class="card-title">📊 상태 분포</div><div style="padding:4px;"><canvas id="statusDist" height="180"></canvas></div></div>
-<div class="card" style="margin:0"><div class="card-title">📊 심각도 분포</div><div style="padding:4px;"><canvas id="severeDist" height="180"></canvas></div></div>
-</div>
-
-<div class="footer">TAPD API 실시간 · Trickcal · Netlify 배포 · 24/7 운영</div>
-</div>
-
 <script>
-let HB=[]; // HUN 버그
-let ALL=[]; // 전체 버그
+let HB=[],PREV={},NOTIFS=[],NO=false,FT=true;
 const FS={ver:new Set(['all']),vr:new Set(['all']),st:new Set(['all']),sv:new Set(['all'])};
+const HF=['current_owner','reporter','participator','cc','te','de','fixer'];
+const EXCEL=[{i:'2324008',t:'本地化-漏key+全量表内key不存在',s:'一般',st:'新',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2324008',hr:'参与人',m:'否'},{i:'2364433',t:'本地化-语音内容和实际意思相反',s:'严重',st:'新',v:'Fix进W29W30-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2364433',hr:'开发人员',m:'否'},{i:'2325538',t:'本地化-语言包key值未翻译',s:'一般',st:'已测试验证',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2325538',hr:'参与评论',m:'是'},{i:'2371062',t:'"Carrot Side"2星技能文本错误',s:'一般',st:'已测试验证',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2371062',hr:'修复人',m:'是'},{i:'2370491',t:'"Carrot"技能文本误译问题',s:'致命',st:'已解决',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2370491',hr:'开发人员',m:'是'},{i:'2370196',t:'角色配音演员名字牧野由依',s:'一般',st:'已测试验证',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2370196',hr:'开发人员',m:'是'},{i:'2369840',t:'梦境之地使徒复活增幅器',s:'严重',st:'已解决',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2369840',hr:'开发人员',m:'是'},{i:'2344103',t:'商城UI糖果不显示',s:'一般',st:'已关闭',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2344103',hr:'参与评论',m:'是'},{i:'2333713',t:'所有者或参与者修改无效',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2333713',hr:'修复人',m:'否'},{i:'2339597',t:'LQA分配-角色故事文本无显示',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2339597',hr:'修复人',m:'是'},{i:'2340522',t:'进入关卡后阿德里安士兵变韩文',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2340522',hr:'开发人员',m:'是'},{i:'2293083',t:'战斗结算日文文本错误',s:'致命',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2293083',hr:'开发人员',m:'是'},{i:'2370136',t:'主界面关于显示问题',s:'严重',st:'已测试验证',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2370136',hr:'开发人员',m:'是'},{i:'2338433',t:'研究助理异常退出',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2338433',hr:'修复人',m:'是'},{i:'2339040',t:'希望角色故事全部韩文',s:'致命',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2339040',hr:'开发人员',m:'是'},{i:'2344413',t:'幸运商店UI韩语',s:'致命',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2344413',hr:'开发人员',m:'是'},{i:'2339348',t:'资源加载韩文未翻译',s:'严重',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2339348',hr:'开发人员',m:'是'},{i:'2370476',t:'Carrot Side文本错误',s:'一般',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2370476',hr:'修复人',m:'是'},{i:'2334938',t:'游戏字体UI无法显示',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2334938',hr:'修复人',m:'是'},{i:'2339827',t:'日文翻译缺失BR标签',s:'严重',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2339827',hr:'参与评论',m:'是'},{i:'2328184',t:'按键上韩文文本',s:'一般',st:'已测试验证',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2328184',hr:'参与评论',m:'是'},{i:'2324847',t:'缺失日语文本',s:'一般',st:'已测试验证',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2324847',hr:'开发人员',m:'是'},{i:'2324398',t:'邮箱验证代码韩文',s:'一般',st:'已测试验证',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2324398',hr:'开发人员',m:'是'},{i:'2340806',t:'SGP测试开始按钮',s:'一般',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2340806',hr:'参与评论',m:'是'},{i:'2365056',t:'任务名称不完全一致',s:'一般',st:'已测试验证',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2365056',hr:'修复人',m:'是'}];
 
-const stMap={new:['new'],active:['in_progress','reopened'],done:['resolved','verified'],rejected:['rejected'],suspended:['suspended'],closed:['closed']};
-
-function getSeverityClass(severity){
-  const s=(severity||'').toLowerCase();
-  if(s.includes('fatal')||s.includes('critical'))return'sf';
-  if(s.includes('serious')||s.includes('major'))return'ss';
-  return'sn';
+async function ld(){
+try{
+const rb=await fetch('/data/all_bugs_r.json').then(r=>r.json());
+HB=rb.filter(b=>HF.some(f=>(b[f]||'').includes('HUN')));
+const vf=new Set();const vr=new Set();
+HB.forEach(b=>{if(b.version_fix&&b.version_fix!=='0')vf.add(b.version_fix);if(b.version_report&&b.version_report!=='0')vr.add(b.version_report)});
+EXCEL.forEach(e=>{if(e.v)vf.add(e.v)});
+[{id:'vc',set:vf},{id:'dc',set:vr}].forEach(({id,set})=>{
+document.getElementById(id).innerHTML='<span class="chip on" data-v="all" data-t="'+(id==='vc'?'ver':'vr')+'">전체</span>';
+[...set].sort().forEach(v=>{document.getElementById(id).innerHTML+='<span class="chip" data-v="'+v+'" data-t="'+(id==='vc'?'ver':'vr')+'">'+v+'</span>'});
+});
+document.getElementById('sc').innerHTML='';const stMap={new:['new'],active:['in_progress','reopened'],done:['resolved','verified'],rejected:['rejected'],suspended:['suspended'],closed:['closed']};const stLabels={new:'신규',active:'진행중',done:'해결/검증',rejected:'반려',suspended:'보류',closed:'종료'};Object.entries(stLabels).forEach(([k,v])=>{document.getElementById('sc').innerHTML+='<span class="chip" data-v="'+k+'" data-t="st">'+v+'</span>'});
+document.getElementById('sc').innerHTML='<span class="chip on" data-v="all" data-t="st">전체</span>'+document.getElementById('sc').innerHTML;
+document.getElementById('xc').innerHTML='';const xKl={fatal:'치명',serious:'심각',normal:'일반'};Object.entries(xKl).forEach(([k,v])=>{document.getElementById('xc').innerHTML+='<span class="chip" data-v="'+k+'" data-t="sv">'+v+'</span>'});
+document.getElementById('xc').innerHTML='<span class="chip on" data-v="all" data-t="sv">전체</span>'+document.getElementById('xc').innerHTML;
+document.querySelectorAll('.chip').forEach(c=>{c.onclick=function(){const v=this.getAttribute('data-v');const t=this.getAttribute('data-t');const s=FS[t];if(v==='all'){if(!s.has('all')){s.clear();s.add('all')}else{s.delete('all');this.classList.remove('on')}if(s.size===0){s.add('all')}document.querySelectorAll('.chip[data-v="all"][data-t="'+t+'"]').forEach(x=>x.classList.toggle('on',s.has('all')))}else{s.delete('all');document.querySelectorAll('.chip[data-v="all"][data-t="'+t+'"]').forEach(x=>x.classList.remove('on'));if(s.has(v)){s.delete(v);this.classList.remove('on')}else{s.add(v);this.classList.add('on')}if(s.size===0){s.add('all');document.querySelectorAll('.chip[data-v="all"][data-t="'+t+'"]').forEach(x=>x.classList.add('on'))}}rnd()}});
+document.getElementById('th').textContent=HB.length;
+document.getElementById('lu').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+document.getElementById('lb').style.display='none';
+rnd();detCh();
+}catch(e){document.getElementById('lb').innerHTML='Error: '+e.message}
 }
-
-function getStatusClass(status){
-  const s=(status||'').toLowerCase();
-  if(s==='new')return'tn';
-  if(s==='in_progress'||s==='reopened')return'tp';
-  return'tc';
+function rnd(){
+let F=HB.filter(b=>{if(!FS.ver.has('all')&&!FS.ver.has(b.version_fix||''))return false;if(!FS.vr.has('all')&&!FS.vr.has(b.version_report||''))return false;if(!FS.st.has('all')){const s=(b.status||'').toLowerCase();let ok=false;for(const x of FS.st){const ms=stMap[x]||[x];if(ms.includes(s)){ok=true;break}}if(!ok)return false}if(!FS.sv.has('all')){const se=(b.severity||'').toLowerCase();let ok=false;if(FS.sv.has('fatal')&&(se.includes('fatal')||se.includes('critical')))ok=true;if(FS.sv.has('serious')&&(se.includes('serious')||se.includes('major')))ok=true;if(FS.sv.has('normal')&&(se.includes('normal')||se.includes('minor')||se.includes('trivial')))ok=true;if(!ok)return false}return true});
+document.getElementById('cb').textContent=F.length+'건';
+const act=F.filter(b=>['new','in_progress','reopened'].includes(b.status));
+const vfy=F.filter(b=>['resolved','verified'].includes(b.status));
+const cls=F.filter(b=>b.status==='closed');
+const fatal=F.filter(b=>(b.severity||'').toLowerCase().includes('fatal')||(b.severity||'').toLowerCase().includes('critical'));
+const serious=F.filter(b=>(b.severity||'').toLowerCase().includes('serious')||(b.severity||'').toLowerCase().includes('major'));
+const sev=[...new Set([...fatal,...serious])];
+const sevA=sev.filter(b=>act.includes(b));
+const vC={};F.forEach(b=>{const v=b.version_fix||'미지정';vC[v]=(vC[v]||0)+1});
+const vK=Object.keys(vC).sort((a,b)=>{const ma=a.match(/W(\d+)/),mb=b.match(/W(\d+)/);if(ma&&mb)return parseInt(mb[1])-parseInt(ma[1]);return a<b?1:-1});
+let h='<div class="metrics-grid"><div class="metric-card" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff"><div style="font-size:28px;font-weight:700">'+F.length+'</div><div style="font-size:12px;opacity:.8">HUN 관련 전체</div></div><div class="metric-card" style="background:linear-gradient(135deg,#fa709a,#fee140);color:#fff"><div style="font-size:28px;font-weight:700">'+act.length+'</div><div style="font-size:12px;opacity:.8">미해결</div></div><div class="metric-card" style="background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff"><div style="font-size:28px;font-weight:700">'+vfy.length+'</div><div style="font-size:12px;opacity:.8">검증중</div></div><div class="metric-card" style="background:linear-gradient(135deg,#11998e,#38ef7d);color:#fff"><div style="font-size:28px;font-weight:700">'+cls.length+'</div><div style="font-size:12px;opacity:.8">종료 ('+(cls.length/F.length*100).toFixed(0)+'%)</div></div><div class="metric-card" style="background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff"><div style="font-size:28px;font-weight:700">'+sev.length+'</div><div style="font-size:12px;opacity:.8">치명/심각</div></div><div class="metric-card" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);color:#fff"><div style="font-size:28px;font-weight:700">'+vK.length+'</div><div style="font-size:12px;opacity:.8">合入版本</div></div></div>';
+h+='<div class="card"><div class="card-title">📊 版本별 현황</div><div class="tw"><table><tr><th>合入版本</th><th>Total</th><th>미해결</th><th>검증중</th><th>종료</th><th>完成率</th><th>치명/심각</th></tr>'+vK.slice(0,25).map(k=>{const a=vC[k];const ac=F.filter(b=>(b.version_fix||'미지정')===k&&act.includes(b)).length;const vv=F.filter(b=>(b.version_fix||'미지정')===k&&vfy.includes(b)).length;const cl=F.filter(b=>(b.version_fix||'미지정')===k&&b.status==='closed').length;const r=a?Math.round((vv+cl)/a*100):100;const svv=F.filter(b=>(b.version_fix||'미지정')===k&&sev.includes(b)).length;return'<tr style="'+(ac?'background:#fff5f5':r>=100?'background:#f0fff4':'')+'"><td>'+k+'</td><td>'+a+'</td><td style="color:'+(ac?'#dc3545':'#999')+'">'+(ac||'-')+'</td><td>'+(vv||'-')+'</td><td>'+(cl||'-')+'</td><td><strong>'+r+'%</strong></td><td style="color:'+(svv?'#dc3545':'#999')+'">'+(svv||'-')+'</td></tr>'}).join('')+'</table></div></div>';
+h+='<div class="card"><div class="card-title">🔴 미해결 Bug ('+act.length+')</div><div class="tw">'+(act.length?tbl(act):'<div style="padding:16px;text-align:center;color:#999">✅ 없음</div>')+'</div></div>';
+h+='<div class="card"><div class="card-title">⚠️ 치명/심각 Bug ('+sev.length+'건, 미해결 '+sevA.length+')</div><div class="tw">'+(sev.length?tbl(sev):'<div style="padding:16px;text-align:center;color:#999">없음</div>')+'</div></div>';
+h+='<div class="card"><div class="card-title">⏳ 해결/검증 대기 ('+vfy.length+')</div><div class="tw">'+(vfy.length?tbl(vfy):'<div style="padding:16px;text-align:center;color:#999">없음</div>')+'</div></div>';
+h+='<div class="card"><div class="card-title">📋 로컬라이징 Bug 목록 (24건 · 누적 이력)</div><div class="tw"><table><tr><th>ID</th><th>标题</th><th>严重</th><th>状态</th><th>合入版本</th><th>HR</th><th>确认</th></tr>'+EXCEL.map(x=>{return'<tr><td>'+(x.i||'').slice(-7)+'</td><td><a href="'+x.l+'" target="_blank">'+esc(x.t)+'</a></td><td><span class="tg '+(x.s==='致命'?'sf':x.s==='严重'?'ss':'sn')+'">'+x.s+'</span></td><td><span class="tg '+(x.st==='新'?'tn':x.st==='已解决'?'tp':'tc')+'">'+x.st+'</span></td><td>'+x.v+'</td><td>'+x.hr+'</td><td>'+x.m+'</td></tr>'}).join('')+'</table></div></div>';
+document.getElementById('ct').innerHTML=h;
+drawCharts(F);
 }
-
+function tbl(items){
+const bgMap=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');
+const limit=80;const show=items.slice(0,limit);
+const more=items.length>limit?'<tr><td colspan="8" style="text-align:center;color:#999;padding:8px">... '+(items.length-limit)+'건 더 있음</td></tr>':'';
+return'<table><tr><th>ID</th><th>제목</th><th>상태</th><th>심각도</th><th>发现版本</th><th>合入版本</th><th>생성일</th><th>비고</th></tr>'+show.map(b=>{const id=b.id||'';const lk='https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id;const st=(b.status||'').toLowerCase();const sr=(b.severity||'').toLowerCase();const cls=st==='new'?'style="background:#fff5f5"':'';const bgVal=(bgMap[id]||'').replace(/"/g,'&quot;');return'<tr '+cls+'><td>'+id.slice(-7)+'</td><td><a href="'+lk+'" target="_blank">'+esc((b.title||'').substring(0,45))+'</a></td><td><span class="tg '+(st==='new'?'tn':st==='in_progress'||st==='reopened'?'tp':'tc')+'">'+(b.status||'-')+'</span></td><td><span class="tg '+(sr.includes('fatal')||sr.includes('critical')?'sf':sr.includes('serious')||sr.includes('major')?'ss':'sn')+'">'+(b.severity||'-')+'</span></td><td>'+(b.version_report||'-')+'</td><td>'+(b.version_fix||'-')+'</td><td>'+(b.created||'').substring(0,10)+'</td><td><input class="bg-input" data-id="'+id+'" placeholder="-" onchange="saveBg(this.dataset.id,this.value)" value="'+bgVal+'"></td></tr>'}).join('')+more+'</table>'
+}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-
-async function loadData(){
-  try{
-    document.getElementById('rs').textContent='상태: TAPD 데이터 로딩 중...';
-    const response=await fetch('./tapd_data.json?_='+Date.now());
-    if(!response.ok)throw new Error('JSON 로딩 오류: '+response.status);
-    const result=await response.json();
-    
-    if(!result.success&&result.error){
-      throw new Error(result.error);
-    }
-    
-    ALL=result.data||[];
-    
-    // HUN 필터링
-    const hf=['current_owner','reporter','participator','cc','te','de','fixer'];
-    HB=ALL.filter(b=>hf.some(f=>(b[f]||'').includes('HUN')));
-    
-    document.getElementById('lu').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('th').textContent=HB.length;
-    document.getElementById('tb').textContent=ALL.length;
-    document.getElementById('rs').textContent='✅ 완료 ('+new Date().toLocaleTimeString('ko-KR')+')';
-    
-    // 필터 초기화
-    initFilters();
-    
-    document.getElementById('lb').style.display='none';
-    render();
-  }catch(e){
-    document.getElementById('lb').innerHTML='❌ Error: '+e.message+'<br><br><button onclick="loadData()" style="padding:8px 16px;background:#667eea;color:#fff;border:none;border-radius:5px;cursor:pointer">🔄 재시도</button>';
-    document.getElementById('rs').textContent='❌ 실패';
-  }
-}
-
-function initFilters(){
-  // 合入버전 필터
-  const vfSet=new Set();
-  HB.forEach(b=>{if(b.version_fix&&b.version_fix!=='0')vfSet.add(b.version_fix)});
-  let vch='<span class="chip on" data-v="all" data-t="ver">전체</span>';
-  [...vfSet].sort().forEach(v=>{vch+='<span class="chip" data-v="'+esc(v)+'" data-t="ver">'+esc(v)+'</span>'});
-  document.getElementById('vc').innerHTML=vch;
-  
-  // 발견버전 필터
-  const vrSet=new Set();
-  HB.forEach(b=>{if(b.version_report&&b.version_report!=='0')vrSet.add(b.version_report)});
-  let dch='<span class="chip on" data-v="all" data-t="vr">전체</span>';
-  [...vrSet].sort().forEach(v=>{dch+='<span class="chip" data-v="'+esc(v)+'" data-t="vr">'+esc(v)+'</span>'});
-  document.getElementById('dc').innerHTML=dch;
-  
-  // 상태 필터
-  const stLabels={new:'신규',active:'진행중',done:'해결/검증',rejected:'반려',suspended:'보류',closed:'종료'};
-  let sch='<span class="chip on" data-v="all" data-t="st">전체</span>';
-  Object.entries(stLabels).forEach(([k,v])=>{sch+='<span class="chip" data-v="'+k+'" data-t="st">'+v+'</span>'});
-  document.getElementById('sc').innerHTML=sch;
-  
-  // 심각도 필터
-  const xKl={fatal:'치명',serious:'심각',normal:'일반'};
-  let xch='<span class="chip on" data-v="all" data-t="sv">전체</span>';
-  Object.entries(xKl).forEach(([k,v])=>{xch+='<span class="chip" data-v="'+k+'" data-t="sv">'+v+'</span>'});
-  document.getElementById('xc').innerHTML=xch;
-  
-  // 필터 이벤트
-  document.querySelectorAll('.chip').forEach(c=>{
-    c.onclick=function(){
-      const v=this.getAttribute('data-v');
-      const t=this.getAttribute('data-t');
-      const s=FS[t];
-      if(v==='all'){
-        s.clear();s.add('all');
-      }else{
-        s.delete('all');
-        if(s.has(v)){s.delete(v)}else{s.add(v)}
-        if(s.size===0)s.add('all');
-      }
-      document.querySelectorAll('.chip[data-t="'+t+'"]').forEach(x=>{
-        x.classList.toggle('on',s.has(x.getAttribute('data-v')))
-      });
-      render();
-    }
-  });
-}
-
-function render(){
-  let F=HB.filter(b=>{
-    if(!FS.ver.has('all')&&!FS.ver.has(b.version_fix||''))return false;
-    if(!FS.vr.has('all')&&!FS.vr.has(b.version_report||''))return false;
-    if(!FS.st.has('all')){
-      const s=(b.status||'').toLowerCase();
-      let ok=false;
-      for(const x of FS.st){
-        const ms=stMap[x]||[x];
-        if(ms.includes(s)){ok=true;break}
-      }
-      if(!ok)return false;
-    }
-    if(!FS.sv.has('all')){
-      const se=(b.severity||'').toLowerCase();
-      let ok=false;
-      if(FS.sv.has('fatal')&&(se.includes('fatal')||se.includes('critical')))ok=true;
-      if(FS.sv.has('serious')&&(se.includes('serious')||se.includes('major')))ok=true;
-      if(FS.sv.has('normal')&&(se.includes('normal')||se.includes('minor')||se.includes('trivial')))ok=true;
-      if(!ok)return false;
-    }
-    return true;
-  });
-  
-  document.getElementById('cb').textContent=F.length+'건';
-  
-  const act=F.filter(b=>['new','in_progress','reopened'].includes((b.status||'').toLowerCase()));
-  const vfy=F.filter(b=>['resolved','verified'].includes((b.status||'').toLowerCase()));
-  const cls=F.filter(b=>(b.status||'').toLowerCase()==='closed');
-  const fatal=F.filter(b=>{const s=(b.severity||'').toLowerCase();return s.includes('fatal')||s.includes('critical')});
-  const serious=F.filter(b=>{const s=(b.severity||'').toLowerCase();return s.includes('serious')||s.includes('major')});
-  const sev=[...new Set([...fatal,...serious])];
-  
-  let h='<div class="metrics-grid">';
-  h+='<div class="metric-card" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff"><div style="font-size:28px;font-weight:700">'+F.length+'</div><div style="font-size:12px;opacity:.8">HUN 관련 전체</div></div>';
-  h+='<div class="metric-card" style="background:linear-gradient(135deg,#fa709a,#fee140);color:#fff"><div style="font-size:28px;font-weight:700">'+act.length+'</div><div style="font-size:12px;opacity:.8">미해결</div></div>';
-  h+='<div class="metric-card" style="background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff"><div style="font-size:28px;font-weight:700">'+vfy.length+'</div><div style="font-size:12px;opacity:.8">검증중</div></div>';
-  h+='<div class="metric-card" style="background:linear-gradient(135deg,#11998e,#38ef7d);color:#fff"><div style="font-size:28px;font-weight:700">'+cls.length+'</div><div style="font-size:12px;opacity:.8">종료 ('+(F.length?Math.round(cls.length/F.length*100):0)+'%)</div></div>';
-  h+='<div class="metric-card" style="background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff"><div style="font-size:28px;font-weight:700">'+sev.length+'</div><div style="font-size:12px;opacity:.8">치명/심각</div></div>';
-  h+='</div>';
-  
-  // 版本별 현황 테이블
-  const vC={};F.forEach(b=>{const v=b.version_fix||'미지정';vC[v]=(vC[v]||0)+1});
-  const vK=Object.keys(vC).sort((a,b)=>{const ma=a.match(/W(\d+)/),mb=b.match(/W(\d+)/);if(ma&&mb)return parseInt(mb[1])-parseInt(ma[1]);return a<b?1:-1});
-  h+='<div class="card"><div class="card-title">📊 버전별 현황</div><div class="tw"><table><tr><th>수정 버전</th><th>전체</th><th>미해결</th><th>검증중</th><th>종료</th><th>완료율</th><th>치명/심각</th></tr>';
-  vK.slice(0,25).forEach(k=>{
-    const a=vC[k];
-    const ac=F.filter(b=>(b.version_fix||'미지정')===k&&act.includes(b)).length;
-    const vv=F.filter(b=>(b.version_fix||'미지정')===k&&vfy.includes(b)).length;
-    const cl=F.filter(b=>(b.version_fix||'미지정')===k&&b.status==='closed').length;
-    const r=a?Math.round((vv+cl)/a*100):100;
-    const svv=F.filter(b=>(b.version_fix||'미지정')===k&&sev.includes(b)).length;
-    h+='<tr style="'+(ac?'background:#fff5f5':r>=100?'background:#f0fff4':'')+'"><td>'+esc(k)+'</td><td>'+a+'</td><td style="color:'+(ac?'#dc3545':'#999')+'">'+(ac||'-')+'</td><td>'+(vv||'-')+'</td><td>'+(cl||'-')+'</td><td><strong>'+r+'%</strong></td><td style="color:'+(svv?'#dc3545':'#999')+'">'+(svv||'-')+'</td></tr>';
-  });
-  h+='</table></div></div>';
-  
-  // 테이블
-  function tbl(items){
-    if(!items.length)return'<div style="padding:16px;text-align:center;color:#999">✅ 없음</div>';
-    const limit=100;
-    const show=items.slice(0,limit);
-    const more=items.length>limit?'<tr><td colspan="8" style="text-align:center;color:#999;padding:8px">... '+(items.length-limit)+'건 더 있음</td></tr>':'';
-    return'<table><tr><th>ID</th><th>제목</th><th>상태</th><th>심각도</th><th>발견버전</th><th>수정버전</th><th>생성일</th><th>생성자</th></tr>'+
-      show.map(b=>{
-        const id=b.id||'';
-        const lk='https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id;
-        return'<tr><td>'+id.slice(-7)+'</td><td><a href="'+lk+'" target="_blank">'+esc((b.title||'').substring(0,45))+'</a></td>'+
-          '<td><span class="tg '+getStatusClass(b.status)+'">'+esc(b.status||'-')+'</span></td>'+
-          '<td><span class="tg '+getSeverityClass(b.severity)+'">'+esc(b.severity||'-')+'</span></td>'+
-          '<td>'+esc(b.version_report||'-')+'</td><td>'+esc(b.version_fix||'-')+'</td>'+
-          '<td>'+(b.created||'').substring(0,10)+'</td><td>'+esc(b.reporter||'-')+'</td></tr>'
-      }).join('')+more+'</table>';
-  }
-  
-  h+='<div class="card"><div class="card-title">🔴 미해결 Bug ('+act.length+')</div><div class="tw">'+tbl(act)+'</div></div>';
-  h+='<div class="card"><div class="card-title">⚠️ 치명/심각 Bug ('+sev.length+')</div><div class="tw">'+tbl(sev)+'</div></div>';
-  h+='<div class="card"><div class="card-title">⏳ 해결/검증 대기 ('+vfy.length+')</div><div class="tw">'+tbl(vfy)+'</div></div>';
-  
-  document.getElementById('ct').innerHTML=h;
-  drawCharts(F);
-}
-
+function saveBg(id,v){try{const m=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');if(v)m[id]=v;else delete m[id];localStorage.setItem('tapd_bigo',JSON.stringify(m))}catch(e){}}
 function drawCharts(F){
-  if(typeof Chart==='undefined')return;
-  
-  // 일일 트렌드
-  const last30=[];
-  const now=new Date();
-  for(let i=29;i>=0;i--){
-    const d=new Date(now);
-    d.setDate(d.getDate()-i);
-    last30.push(d.toISOString().substring(0,10));
-  }
-  const dayData={};
-  last30.forEach(d=>{dayData[d]={total:0,active:0,closed:0}});
-  F.forEach(b=>{
-    const c=(b.created||'').substring(0,10);
-    if(dayData[c]){
-      dayData[c].total++;
-      const st=(b.status||'').toLowerCase();
-      if(st==='new'||st==='in_progress'||st==='reopened')dayData[c].active++;
-      if(st==='closed')dayData[c].closed++;
-    }
-  });
-  const labels=last30.map(d=>d.substring(5,7)+'/'+d.substring(8,10));
-  const totals=last30.map(d=>dayData[d].total);
-  const actives=last30.map(d=>dayData[d].active);
-  const closeds=last30.map(d=>dayData[d].closed);
-  
-  var ctx1=document.getElementById('dailyTrend');
-  if(ctx1){
-    if(window._dtChart)window._dtChart.destroy();
-    window._dtChart=new Chart(ctx1,{
-      type:'bar',
-      data:{labels:labels,datasets:[
-        {label:'신규',data:totals,backgroundColor:'rgba(102,126,234,.6)',borderColor:'#667eea',borderWidth:.5,borderRadius:2},
-        {label:'미해결',data:actives,backgroundColor:'rgba(250,112,154,.6)',borderColor:'#fa709a',borderWidth:.5,borderRadius:2},
-        {label:'종료',data:closeds,backgroundColor:'rgba(17,153,142,.6)',borderColor:'#11998e',borderWidth:.5,borderRadius:2}
-      ]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:12,usePointStyle:true}}},scales:{x:{grid:{display:false},ticks:{font:{size:8},maxRotation:60,minRotation:60}},y:{beginAtZero:true,ticks:{font:{size:9},stepSize:1}}}}
-    });
-  }
-  
-  // 상태 분포
-  var stCnt={};
-  F.forEach(b=>{const s=(b.status||'').toLowerCase();stCnt[s]=(stCnt[s]||0)+1});
-  var sKl={new:'신규',in_progress:'진행중',reopened:'재오픈',resolved:'해결됨',verified:'검증완료',rejected:'반려',suspended:'보류',closed:'종료'};
-  var stLabels=[],stValues=[];
-  Object.entries(stCnt).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{stLabels.push(sKl[k]||k);stValues.push(v)});
-  
-  var ctx2=document.getElementById('statusDist');
-  if(ctx2){
-    if(window._stChart)window._stChart.destroy();
-    window._stChart=new Chart(ctx2,{
-      type:'doughnut',
-      data:{labels:stLabels,datasets:[{data:stValues,backgroundColor:['#667eea','#fa709a','#f093fb','#4facfe','#11998e','#fbc2eb','#fee140','#a18cd1'],borderWidth:1}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:10,usePointStyle:true,padding:6}}},cutout:'50%'}
-    });
-  }
-  
-  // 심각도 분포
-  var svCnt={};
-  F.forEach(b=>{
-    const se=(b.severity||'').toLowerCase();
-    if(se.includes('fatal')||se.includes('critical'))svCnt['치명']=(svCnt['치명']||0)+1;
-    else if(se.includes('serious')||se.includes('major'))svCnt['심각']=(svCnt['심각']||0)+1;
-    else svCnt['일반']=(svCnt['일반']||0)+1;
-  });
-  
-  var ctx3=document.getElementById('severeDist');
-  if(ctx3){
-    if(window._svChart)window._svChart.destroy();
-    window._svChart=new Chart(ctx3,{
-      type:'doughnut',
-      data:{labels:Object.keys(svCnt),datasets:[{data:Object.values(svCnt),backgroundColor:['#dc3545','#fd7e14','#6c757d'],borderWidth:1}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:10,usePointStyle:true,padding:6}}},cutout:'50%'}
-    });
-  }
+if(typeof Chart==='undefined')return;
+// Daily trend
+const last30=[];const now=new Date();
+for(let i=29;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);last30.push(d.toISOString().substring(0,10))}
+const dayData={};last30.forEach(d=>{dayData[d]={total:0,active:0,closed:0}});
+F.forEach(b=>{const c=(b.created||'').substring(0,10);if(dayData[c]){dayData[c].total++;const st=(b.status||'').toLowerCase();if(st==='new'||st==='in_progress'||st==='reopened')dayData[c].active++;if(st==='closed')dayData[c].closed++}});
+const labels=last30.map(d=>{const m=d.substring(5,7);const day=d.substring(8,10);return m+'/'+day});
+const totals=last30.map(d=>dayData[d].total);
+const actives=last30.map(d=>dayData[d].active);
+const closeds=last30.map(d=>dayData[d].closed);
+var ctx1=document.getElementById('dailyTrend');if(ctx1){if(window._dtChart)window._dtChart.destroy();window._dtChart=new Chart(ctx1,{type:'bar',data:{labels:labels,datasets:[{label:'신규',data:totals,backgroundColor:'rgba(102,126,234,.6)',borderColor:'#667eea',borderWidth:.5,borderRadius:2},{label:'미해결',data:actives,backgroundColor:'rgba(250,112,154,.6)',borderColor:'#fa709a',borderWidth:.5,borderRadius:2},{label:'종료',data:closeds,backgroundColor:'rgba(17,153,142,.6)',borderColor:'#11998e',borderWidth:.5,borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10,family:'Noto Sans KR'},boxWidth:12,usePointStyle:true}}},scales:{x:{grid:{display:false},ticks:{font:{size:8,family:'Noto Sans KR'},maxRotation:60,minRotation:60}},y:{beginAtZero:true,ticks:{font:{size:9,family:'Noto Sans KR'},stepSize:1}}}}})}
+// Status distribution
+var stCnt={};F.forEach(b=>{const s=(b.status||'').toLowerCase();stCnt[s]=(stCnt[s]||0)+1});
+var sKl={new:'신규',in_progress:'진행중',reopened:'재오픈',resolved:'해결됨',verified:'검증완료',rejected:'반려',suspended:'보류',closed:'종료'};
+var stLabels=[],stValues=[];Object.entries(stCnt).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{stLabels.push(sKl[k]||k);stValues.push(v)});
+var ctx2=document.getElementById('statusDist');if(ctx2){if(window._stChart)window._stChart.destroy();window._stChart=new Chart(ctx2,{type:'doughnut',data:{labels:stLabels,datasets:[{data:stValues,backgroundColor:['#667eea','#fa709a','#f093fb','#4facfe','#11998e','#fbc2eb','#fee140','#a18cd1'],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9,family:'Noto Sans KR'},boxWidth:10,usePointStyle:true,padding:6}}},cutout:'50%'}})}
+// Severity distribution
+var svCnt={};F.forEach(b=>{const se=(b.severity||'').toLowerCase();if(se.includes('fatal')||se.includes('critical'))svCnt['치명']=(svCnt['치명']||0)+1;else if(se.includes('serious')||se.includes('major'))svCnt['심각']=(svCnt['심각']||0)+1;else svCnt['일반']=(svCnt['일반']||0)+1});
+var svLabels=Object.keys(svCnt);var svValues=Object.values(svCnt);
+var ctx3=document.getElementById('severeDist');if(ctx3){if(window._svChart)window._svChart.destroy();window._svChart=new Chart(ctx3,{type:'doughnut',data:{labels:svLabels,datasets:[{data:svValues,backgroundColor:['#dc3545','#fd7e14','#6c757d'],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9,family:'Noto Sans KR'},boxWidth:10,usePointStyle:true,padding:6}}},cutout:'50%'}})}
 }
-
-// 자동 새로고침 (3시간)
-let sec=10800;
-setInterval(()=>{sec--;if(sec<=0){sec=10800;loadData()}},1000);
-
-// 초기 로드
-loadData();
-</script>
-</body>
-</html>
+function detCh(){
+if(FT){PREV={};HB.forEach(b=>{PREV[b.id]=b.status||''});FT=false;return}
+const ts=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const nn=[];const cm={};HB.forEach(b=>cm[b.id]=b);
+Object.entries(PREV).forEach(([id,os])=>{const b=cm[id];if(!b){nn.push({t:ts,ty:'stat',bug:id,title:'(제거)',detail:'HUN 연관 해제됨'});return}if(b.status!==os&&os){nn.push({t:ts,ty:'chg',bug:id,title:(b.title||'').substring(0,30),detail:'상태: '+os+' → '+(b.status||'-'),link:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id})}});
+Object.entries(cm).forEach(([id,b])=>{if(!PREV[id]){nn.push({t:ts,ty:'new',bug:id,title:(b.title||'').substring(0,30),detail:'🆕 HUN에 새로 할당',link:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id})}});
+PREV={};HB.forEach(b=>{PREV[b.id]=b.status||''});
+if(nn.length){NOTIFS=[...nn,...NOTIFS].slice(0,50);pushNotif();document.getElementById('d').style.display='block'}
+}
+function pushNotif(){
+const el=document.getElementById('ntL');if(!NOTIFS.length){el.innerHTML='<div class="nt-empty">✅ 최근 변경 없음</div>';return}
+const gr={};NOTIFS.forEach(n=>{if(!gr[n.t])gr[n.t]=[];gr[n.t].push(n)});
+let html='';Object.entries(gr).forEach(([t,its])=>{html+='<div style="margin-bottom:10px"><div style="font-size:10px;color:#999;margin-bottom:3px">'+t+'</div>';its.forEach(n=>{html+='<div class="nt-item n-'+n.ty+'"><div><b>'+(n.link?'<a href="'+n.link+'" target="_blank">'+n.bug.slice(-7)+'</a>':n.bug.slice(-7))+'</b> '+n.title+'</div><div style="font-size:10px;color:#666">'+n.detail+'</div></div>'});html+='</div>'});
+el.innerHTML=html;document.getElementById('ntT').textContent='마지막 확인: '+new Date().toLocaleTimeString('ko-KR')+' (3시간)';
+}
+function tN(){NO=!NO;document.getElementById('p').classList.toggle('open',NO);document.getElementById('d').style.display='none'}
+async function manualRefresh(){const rs=document.getElementById('rs');rs.textContent='상태: TAPD 갱신 중...';try{const r=await fetch('/api/refresh');if(r.ok){rs.textContent='✅ 완료 ('+new Date().toLocaleTimeString('ko-KR')+')';setTimeout(()=>{rs.textContent='마지막: '+new Date().toLocaleTimeString('ko-KR')},4000);FT=true;ld()}else{rs.textContent='❌ 실패'}}catch(e){rs.textContent='❌ 오류: '+e.message}}
+let sec=10800;setInterval(()=>{sec--;if(sec<=0){sec=10800;ld()}},1000);
+ld();
+</script></body></html>
