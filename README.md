@@ -1,9 +1,5 @@
-# GameInsight Dashboards
-외부 공유용 대시보드
+# 🎲 트릭컬 HUN TAPD 품질 대시보드
 
-## 📁 구조
-- `game/` — 한국 모바일 게임 대시보드
-- `tapd/` — TAPD 품질 대시보드
+> 트릭컬 Revive 결함 추적 · 품질 관리 대시보드 (TAPD API 실시간 연동)
 
-## 🌐 접속
-GitHub Pages: `https://jycho7254.github.io/dashboards-repo/`
+🔗 **URL**: https://jycho7254-commits.github.io/TAPD-Dashboard/tapd/
