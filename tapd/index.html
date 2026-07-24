@@ -66,7 +66,7 @@ td a{color:#667eea;text-decoration:none}td a:hover{text-decoration:underline}
 <div class="footer">TAPD API 실시간 · Trickcal_Revive · deepseek-v4-pro · http://192.168.4.139:8080</div>
 </div>
 <script>
-let HB=[],PREV={},NOTIFS=[],NO=false,FT=true;
+let HB=[],PREV={},NOTIFS=[],NO=false,FT=true,BIGO={},BIGO_LOADED=false;
 const FS={ver:new Set(['all']),vr:new Set(['all']),st:new Set(['all']),sv:new Set(['all'])};
 const HF=['de','current_owner'];
 const EXCEL=[{i:'2324008',t:'本地化-漏key+全量表内key不存在',s:'一般',st:'新',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2324008',hr:'参与人',m:'否'},{i:'2364433',t:'本地化-语音内容和实际意思相反',s:'严重',st:'新',v:'Fix进W29W30-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2364433',hr:'开发人员',m:'否'},{i:'2325538',t:'本地化-语言包key值未翻译',s:'一般',st:'已测试验证',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2325538',hr:'参与评论',m:'是'},{i:'2371062',t:'"Carrot Side"2星技能文本错误',s:'一般',st:'已测试验证',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2371062',hr:'修复人',m:'是'},{i:'2370491',t:'"Carrot"技能文本误译问题',s:'致命',st:'已解决',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2370491',hr:'开发人员',m:'是'},{i:'2370196',t:'角色配音演员名字牧野由依',s:'一般',st:'已测试验证',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2370196',hr:'开发人员',m:'是'},{i:'2369840',t:'梦境之地使徒复活增幅器',s:'严重',st:'已解决',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2369840',hr:'开发人员',m:'是'},{i:'2344103',t:'商城UI糖果不显示',s:'一般',st:'已关闭',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2344103',hr:'参与评论',m:'是'},{i:'2333713',t:'所有者或参与者修改无效',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2333713',hr:'修复人',m:'否'},{i:'2339597',t:'LQA分配-角色故事文本无显示',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2339597',hr:'修复人',m:'是'},{i:'2340522',t:'进入关卡后阿德里安士兵变韩文',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2340522',hr:'开发人员',m:'是'},{i:'2293083',t:'战斗结算日文文本错误',s:'致命',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2293083',hr:'开发人员',m:'是'},{i:'2370136',t:'主界面关于显示问题',s:'严重',st:'已测试验证',v:'Fix进W31W32-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2370136',hr:'开发人员',m:'是'},{i:'2338433',t:'研究助理异常退出',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2338433',hr:'修复人',m:'是'},{i:'2339040',t:'希望角色故事全部韩文',s:'致命',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2339040',hr:'开发人员',m:'是'},{i:'2344413',t:'幸运商店UI韩语',s:'致命',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2344413',hr:'开发人员',m:'是'},{i:'2339348',t:'资源加载韩文未翻译',s:'严重',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2339348',hr:'开发人员',m:'是'},{i:'2370476',t:'Carrot Side文本错误',s:'一般',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2370476',hr:'修复人',m:'是'},{i:'2334938',t:'游戏字体UI无法显示',s:'致命',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2334938',hr:'修复人',m:'是'},{i:'2339827',t:'日文翻译缺失BR标签',s:'严重',st:'已关闭',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2339827',hr:'参与评论',m:'是'},{i:'2328184',t:'按键上韩文文本',s:'一般',st:'已测试验证',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2328184',hr:'参与评论',m:'是'},{i:'2324847',t:'缺失日语文本',s:'一般',st:'已测试验证',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2324847',hr:'开发人员',m:'是'},{i:'2324398',t:'邮箱验证代码韩文',s:'一般',st:'已测试验证',v:'全球服OB-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2324398',hr:'开发人员',m:'是'},{i:'2340806',t:'SGP测试开始按钮',s:'一般',st:'已关闭',v:'Fix进W25W26-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2340806',hr:'参与评论',m:'是'},{i:'2365056',t:'任务名称不完全一致',s:'一般',st:'已测试验证',v:'Fix进W27W28-1.3',l:'https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id=2365056',hr:'修复人',m:'是'}];
@@ -102,7 +102,7 @@ document.querySelectorAll('.chip').forEach(c=>{c.onclick=function(){const v=this
 document.getElementById('th').textContent=HB.length;
 document.getElementById('lu').textContent=(useProxy?'🔴 실시간 ':'📦 캐시 ')+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(raw.meta&&raw.meta.fetched_at?' (수집: '+raw.meta.fetched_at.replace('T',' ').substring(0,16)+')':'');
 document.getElementById('lb').style.display='none';
-rnd();detCh();
+rnd();ghLoadNotes();detCh();
 }catch(e){document.getElementById('lb').innerHTML='Error: '+e.message}
 }
 function rnd(){
@@ -127,13 +127,45 @@ document.getElementById('ct').innerHTML=h;
 drawCharts(F);
 }
 function tbl(items){
-const bgMap=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');
+const bgMap=BIGO;
 const limit=80;const show=items.slice(0,limit);
 const more=items.length>limit?'<tr><td colspan="9" style="text-align:center;color:#999;padding:8px">... '+(items.length-limit)+'건 더 있음</td></tr>':'';
-return'<table><tr><th>ID</th><th>제목</th><th>상태</th><th>심각도</th><th>발견 버전</th><th>수정 버전</th><th>생성일</th><th>생성자</th><th>비고</th></tr>'+show.map(b=>{const id=b.id||'';const lk='https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id;const st=(b.status||'').toLowerCase();const sr=(b.severity||'').toLowerCase();const cls=st==='new'?'style="background:#fff5f5"':'';const bgVal=(bgMap[id]||'').replace(/"/g,'&quot;');return'<tr '+cls+'><td>'+id.slice(-7)+'</td><td><a href="'+lk+'" target="_blank">'+esc((b.title||'').substring(0,45))+'</a></td><td><span class="tg '+(st==='new'?'tn':st==='in_progress'||st==='reopened'?'tp':'tc')+'">'+(b.status||'-')+'</span></td><td><span class="tg '+(sr.includes('fatal')||sr.includes('critical')?'sf':sr.includes('serious')||sr.includes('major')?'ss':'sn')+'">'+(b.severity||'-')+'</span></td><td>'+(b.version_report||'-')+'</td><td>'+(b.version_fix||'-')+'</td><td>'+(b.created||'').substring(0,10)+'</td><td>'+(b.reporter||'-')+'</td><td><input class="bg-input" data-id="'+id+'" placeholder="-" onchange="saveBg(this.dataset.id,this.value)" value="'+bgVal+'"></td></tr>'}).join('')+more+'</table>'
+return'<table><tr><th>ID</th><th>제목</th><th>상태</th><th>심각도</th><th>발견 버전</th><th>수정 버전</th><th>생성일</th><th>생성자</th><th>비고</th></tr>'+show.map(b=>{const id=b.id||'';const lk='https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id;const st=(b.status||'').toLowerCase();const sr=(b.severity||'').toLowerCase();const cls=st==='new'?'style="background:#fff5f5"':'';const bgRaw=bgMap[id]||'';const bgVal=(typeof bgRaw==='object'?(bgRaw.text||''):bgRaw).replace(/"/g,'&quot;');return'<tr '+cls+'><td>'+id.slice(-7)+'</td><td><a href="'+lk+'" target="_blank">'+esc((b.title||'').substring(0,45))+'</a></td><td><span class="tg '+(st==='new'?'tn':st==='in_progress'||st==='reopened'?'tp':'tc')+'">'+(b.status||'-')+'</span></td><td><span class="tg '+(sr.includes('fatal')||sr.includes('critical')?'sf':sr.includes('serious')||sr.includes('major')?'ss':'sn')+'">'+(b.severity||'-')+'</span></td><td>'+(b.version_report||'-')+'</td><td>'+(b.version_fix||'-')+'</td><td>'+(b.created||'').substring(0,10)+'</td><td>'+(b.reporter||'-')+'</td><td><input class="bg-input" data-id="'+id+'" placeholder="-" onchange="saveBg(this.dataset.id,this.value)" value="'+bgVal+'"></td></tr>'}).join('')+more+'</table>'
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function saveBg(id,v){try{const m=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');if(v)m[id]=v;else delete m[id];localStorage.setItem('tapd_bigo',JSON.stringify(m))}catch(e){}}
+const GH_REPO='jycho7254-commits/TAPD-Dashboard';const GH_BRANCH='master';const GH_PATH='tapd/notes_db.json';
+function ghHeaders(extra){const h={'Accept':'application/vnd.github+json'};const tk=(typeof GIT_TOKEN!=='undefined')?GIT_TOKEN:'';if(tk)h['Authorization']='Bearer '+tk;return Object.assign(h,extra||{})}
+function saveBg(id,v){
+  // 1. 로컬 업데이트
+  BIGO[id]={text:v,updated_at:new Date().toISOString()};
+  // 2. localStorage 백업
+  try{const m=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');if(v)m[id]=v;else delete m[id];localStorage.setItem('tapd_bigo',JSON.stringify(m))}catch(e){}
+  // 3. GitHub에 저장 (readme에 커밋)
+  ghSaveNotes();
+}
+function ghLoadNotes(){
+  fetch('https://raw.githubusercontent.com/'+GH_REPO+'/'+GH_BRANCH+'/'+GH_PATH+'?t='+Date.now())
+    .then(r=>r.json())
+    .then(d=>{if(d&&typeof d==='object'){Object.assign(BIGO,d);BIGO_LOADED=true;tbl();}})
+    .catch(e=>{try{Object.assign(BIGO,JSON.parse(localStorage.getItem('tapd_bigo')||'{}'));BIGO_LOADED=true;tbl();}catch(e2){}})
+}
+function ghSaveNotes(){
+  // GitHub Contents API로 파일 업데이트 (토큰 없으면 localStorage만)
+  const tk=(typeof GIT_TOKEN!=='undefined')?GIT_TOKEN:'';
+  if(!tk){return}
+  // 현재 SHA 가져오기
+  fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_PATH+'?ref='+GH_BRANCH,{headers:ghHeaders()})
+    .then(r=>r.json())
+    .then(d=>{
+      const sha=d.sha;
+      const content=btoa(unescape(encodeURIComponent(JSON.stringify(BIGO,null,2))));
+      fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_PATH,{
+        method:'PUT',
+        headers:ghHeaders({'Content-Type':'application/json'}),
+        body:JSON.stringify({message:'update notes',content:content,sha:sha,branch:GH_BRANCH})
+      }).then(r=>r.json()).then(()=>{}).catch(()=>{});
+    }).catch(()=>{});
+}
 function drawCharts(F){
 if(typeof Chart==='undefined')return;
 // === 1. 일일 버그 추세 (HUN 전체 기준, 최근 30일) ===
