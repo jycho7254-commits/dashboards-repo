@@ -133,37 +133,51 @@ const more=items.length>limit?'<tr><td colspan="9" style="text-align:center;colo
 return'<table><tr><th>ID</th><th>제목</th><th>상태</th><th>심각도</th><th>발견 버전</th><th>수정 버전</th><th>생성일</th><th>생성자</th><th>비고</th></tr>'+show.map(b=>{const id=b.id||'';const lk='https://www.tapd.cn/46691872/bugtrace/bugs/view?bug_id='+id;const st=(b.status||'').toLowerCase();const sr=(b.severity||'').toLowerCase();const cls=st==='new'?'style="background:#fff5f5"':'';const bgRaw=bgMap[id]||'';const bgVal=(typeof bgRaw==='object'?(bgRaw.text||''):bgRaw).replace(/"/g,'&quot;');return'<tr '+cls+'><td>'+id.slice(-7)+'</td><td><a href="'+lk+'" target="_blank">'+esc((b.title||'').substring(0,45))+'</a></td><td><span class="tg '+(st==='new'?'tn':st==='in_progress'||st==='reopened'?'tp':'tc')+'">'+(b.status||'-')+'</span></td><td><span class="tg '+(sr.includes('fatal')||sr.includes('critical')?'sf':sr.includes('serious')||sr.includes('major')?'ss':'sn')+'">'+(b.severity||'-')+'</span></td><td>'+(b.version_report||'-')+'</td><td>'+(b.version_fix||'-')+'</td><td>'+(b.created||'').substring(0,10)+'</td><td>'+(b.reporter||'-')+'</td><td><input class="bg-input" data-id="'+id+'" placeholder="-" onchange="saveBg(this.dataset.id,this.value)" value="'+bgVal+'"></td></tr>'}).join('')+more+'</table>'
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+// 비고 토큰 — localStorage에 저장 (최초 1회 입력)
+function getGhToken(){
+  let tk=localStorage.getItem('gh_notes_token')||'';
+  if(!tk){
+    tk=prompt('비고 저장을 위해 GitHub 토큰이 필요합니다.\n(최초 1회만 입력, 토큰은 이 PC에만 저장됩니다)\n\n토큰이 없으면 비고는 이 PC에만 저장됩니다.','');
+    if(tk)localStorage.setItem('gh_notes_token',tk);
+  }
+  return tk;
+}
 const GH_REPO='jycho7254-commits/TAPD-Dashboard';const GH_BRANCH='master';const GH_PATH='tapd/notes_db.json';
-function ghHeaders(extra){const h={'Accept':'application/vnd.github+json'};const tk=(typeof GIT_TOKEN!=='undefined')?GIT_TOKEN:'';if(tk)h['Authorization']='Bearer '+tk;return Object.assign(h,extra||{})}
+function ghHeaders(extra){const h={'Accept':'application/vnd.github+json'};const tk=localStorage.getItem('gh_notes_token')||'';if(tk)h['Authorization']='Bearer '+tk;return Object.assign(h,extra||{})}
 function saveBg(id,v){
   // 1. 로컬 업데이트
   BIGO[id]={text:v,updated_at:new Date().toISOString()};
   // 2. localStorage 백업
   try{const m=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');if(v)m[id]=v;else delete m[id];localStorage.setItem('tapd_bigo',JSON.stringify(m))}catch(e){}
-  // 3. GitHub에 저장 (readme에 커밋)
+  // 3. GitHub에 저장
   ghSaveNotes();
 }
 function ghLoadNotes(){
+  // GitHub에서 비고 불러오기 (읽기는 토큰 불필요 — raw URL)
   fetch('https://raw.githubusercontent.com/'+GH_REPO+'/'+GH_BRANCH+'/'+GH_PATH+'?t='+Date.now())
     .then(r=>r.json())
-    .then(d=>{if(d&&typeof d==='object'){Object.assign(BIGO,d);BIGO_LOADED=true;tbl();}})
+    .then(d=>{if(d&&typeof d==='object'){
+      // GitHub 데이터 + localStorage 데이터 머지
+      try{const local=JSON.parse(localStorage.getItem('tapd_bigo')||'{}');Object.keys(local).forEach(k=>{if(!d[k])d[k]={text:local[k],updated_at:''}})}catch(e){}
+      Object.assign(BIGO,d);BIGO_LOADED=true;tbl();
+    }})
     .catch(e=>{try{Object.assign(BIGO,JSON.parse(localStorage.getItem('tapd_bigo')||'{}'));BIGO_LOADED=true;tbl();}catch(e2){}})
 }
 function ghSaveNotes(){
-  // GitHub Contents API로 파일 업데이트 (토큰 없으면 localStorage만)
-  const tk=(typeof GIT_TOKEN!=='undefined')?GIT_TOKEN:'';
-  if(!tk){return}
+  const tk=localStorage.getItem('gh_notes_token')||'';
+  if(!tk){return} // 토큰 없으면 localStorage만 사용
   // 현재 SHA 가져오기
   fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_PATH+'?ref='+GH_BRANCH,{headers:ghHeaders()})
     .then(r=>r.json())
     .then(d=>{
+      if(!d.sha){console.log('SHA 가져오기 실패');return}
       const sha=d.sha;
       const content=btoa(unescape(encodeURIComponent(JSON.stringify(BIGO,null,2))));
       fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_PATH,{
         method:'PUT',
         headers:ghHeaders({'Content-Type':'application/json'}),
-        body:JSON.stringify({message:'update notes',content:content,sha:sha,branch:GH_BRANCH})
-      }).then(r=>r.json()).then(()=>{}).catch(()=>{});
+        body:JSON.stringify({message:'update notes: '+new Date().toISOString().slice(0,16),content:content,sha:sha,branch:GH_BRANCH})
+      }).then(r=>r.json()).then(()=>{console.log('비고 저장 성공')}).catch(()=>{});
     }).catch(()=>{});
 }
 function drawCharts(F){
